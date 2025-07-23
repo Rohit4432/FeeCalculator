@@ -1,0 +1,627 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Remaining Fee Calculator</title>
+  <link rel="stylesheet" href="enhanced_style.css">
+  <!-- <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    h2 {
+      color: #2a4d69;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+    input, select {
+      padding: 5px;
+      width: 220px;
+      margin-bottom: 10px;
+    }
+    button {
+      padding: 10px 15px;
+      background-color: #2a4d69;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    .result {
+      margin-top: 15px;
+      font-weight: bold;
+      color: green;
+    }
+    .note {
+      margin-top: 20px;
+      font-style: italic;
+      color: #444;
+    }
+  </style> -->
+</head>
+<body>
+
+  <h2>Student Remaining Fee Calculator</h2>
+
+  <label>Course:
+    <select id="course" onchange="updateFee(); updateYearDropdown()">
+      <option value="">--Select Course--</option>
+	<option value="MPharmQA">Master of Pharmacy - Quality Assurance</option>
+	<option value="MPharmPC">Master of Pharmacy - Pharmaceutics</option>
+	<option value="MPharmPCO">Master of Pharmacy - Pharmacology</option>
+	<option value="MPharmPCh">Master of Pharmacy - Pharmacutical Chemistry</option>
+	<option value="MBA">M. B. A.</option>
+	<option value="MCA">Master in Computer Application</option>
+	<option value="BPHARM">Bachelor of Pharmacy - Pharmacy</option>
+	<option value="MA-AE">M.A. (Applied Economics)</option>
+	<option value="MA-ECO">M.A. (Economics)</option>
+	<option value="MA-MARATHI">M.A. (Marathi)</option>
+	<option value="MA-MCJ">M.A. (Mass Communication & Journalism)</option>
+	<option value="MA-SOC">M.A. (Sociology)</option>
+	<option value="MA-ENG">M.A. English</option>
+	<option value="M-COM">M.Com.</option>
+	<option value="MED">M.Ed. (2-Year Course)</option>
+	<option value="MSC-AC">M.Sc. (Analytical Chemistry)</option>
+	<option value="MSC-BT">M.Sc. (Biotechnology)</option>
+	<option value="MSC-BOT">M.Sc. (Botany)</option>
+	<option value="MSC-CHEM">M.Sc. (Chemistry)</option>
+	<option value="MSC-CA">M.Sc. (Computer Applications)</option>
+	<option value="MSC-CN">M.Sc. (Computer Network)</option>
+	<option value="MSC-CS">M.Sc. (Computer Science)</option>
+	<option value="MSC-ES">M.Sc. (Environmental Sciences)</option>
+	<option value="MSC-GEO">M.Sc. (Geology)</option>
+	<option value="MSC-MATH">M.Sc. (Mathematics)</option>
+	<option value="MSC-MICRO">M.Sc. (Microbiology)</option>
+	<option value="MSC-OC">M.Sc. (Organic Chemistry)</option>
+	<option value="MSC-PC">M.Sc. (Physical Chemistry)</option>
+	<option value="MSC-PHY">M.Sc. (Physics)</option>
+	<option value="MSC-STAT">M.Sc. (Statistics)</option>
+	<option value="MSC-ZOO">M.Sc. (Zoology)</option>
+	<option value="MSC-IC">M.Sc. Industrial Chemistry</option>
+	<option value="MPED">Master of Physical Education (M.P.Ed.)</option>
+	<option value="MSW">Master of Social Work (MSW)</option>
+	<option value="MSC-PCO">MSc In Polymer Chemstry</option>
+	<option value="MA-HR">MA HUMAN RIGHT</option>
+	<option value="MSC-MC">M.Sc Medicinal Chemistry</option>
+	<option value="MSC-GP">M.Sc Geophysic</option>
+	<option value="PGDGEO">P.G.Diploma in Geoinformatics</option>
+	<option value="MSC-EM">M.Sc Electronics Media</option>
+	<option value="Ph.DComm">Ph.D Commerce(5 Year)</option>
+	<option value="MAMSCGP">M.A.M.Sc - Geography</option>
+	<option value="PGDWS">Post Graduate Diploma in Women's Studies</option>
+	<option value="Ph.Dart">Ph.D. Course -Arts</option>
+	<option value="Ph.DSCI">Ph.D. Course - Science</option>
+	<option value="MA-TAF">M.A. Theatre Art & Film</option>
+	<option value="PGDMLT">P.G. Diploma Medical Laboratory Technology</option>
+	<option value="BPA">Bachelor Of Performing Arts</option>
+	<option value="MSC-DS">MS.c Data Science</option>
+	<option value="BBA">Bachelor of Business Administration (B.B.A.)</option>
+	<option value="BCA">B.C.A</option>
+    </select>
+  </label>
+ <label>Year:
+    <select id="year" onchange="updateFee()" >
+      <option value="">--Select Year--</option>
+      <option value="First Year">First Year</option>
+      <option value="Second Year">Second Year</option>
+      <option value="Third Year">Third Year</option>
+      <option value="Fourth Year">Fourth Year</option>
+      <option value="Fifth Year">Fifth Year</option>
+    </select>
+  </label>
+
+<script>
+const courseYearsMap = {
+  MPharmQA: ["First Year", "Second Year"],
+  MPharmPC: ["First Year", "Second Year"],
+  MPharmPCO: ["First Year", "Second Year"],
+  MPharmPCh: ["First Year", "Second Year"],
+  MBA: ["First Year", "Second Year"],
+  MCA: ["First Year", "Second Year"],
+  BPHARM: ["First Year", "Second Year", "Third Year", "Fourth Year"],
+  "MA-AE": ["First Year", "Second Year"],
+  "MA-ECO": ["First Year", "Second Year"],
+  "MA-MARATHI": ["First Year", "Second Year"],
+  "MA-MCJ": ["First Year", "Second Year"],
+  "MA-SOC": ["First Year", "Second Year"],
+  "MA-ENG": ["First Year", "Second Year"],
+  "M-COM": ["First Year", "Second Year"],
+  MED: ["First Year", "Second Year"],
+  "MSC-AC": ["First Year", "Second Year"],
+  "MSC-BT": ["First Year", "Second Year"],
+  "MSC-BOT": ["First Year", "Second Year"],
+  "MSC-CHEM": ["First Year", "Second Year"],
+  "MSC-CA": ["First Year", "Second Year"],
+  "MSC-CN": ["First Year", "Second Year"],
+  "MSC-CS": ["First Year", "Second Year"],
+  "MSC-ES": ["First Year", "Second Year"],
+  "MSC-GEO": ["First Year", "Second Year"],
+  "MSC-MATH": ["First Year", "Second Year"],
+  "MSC-MICRO": ["First Year", "Second Year"],
+  "MSC-OC": ["First Year", "Second Year"],
+  "MSC-PC": ["First Year", "Second Year"],
+  "MSC-PHY": ["First Year", "Second Year"],
+  "MSC-STAT": ["First Year", "Second Year"],
+  "MSC-ZOO": ["First Year", "Second Year"],
+  "MSC-IC": ["First Year", "Second Year"],
+  MPED: ["First Year", "Second Year"],
+  MSW: ["First Year", "Second Year"],
+  "MSC-PCO": ["First Year", "Second Year"],
+  "MA-HR": ["First Year", "Second Year"],
+  "MSC-MC": ["First Year", "Second Year"],
+  "MSC-GP": ["First Year", "Second Year"],
+  PGDGEO: ["First Year"],
+  "MSC-EM": ["First Year", "Second Year"],
+  PhDComm: ["First Year", "Second Year", "Third Year", "Fourth Year", "Fifth Year"],
+  "MAMSCGP": ["First Year", "Second Year"],
+  "PGDWS": ["First Year"],
+  "Ph.Dart": ["First Year", "Second Year", "Third Year", "Fourth Year", "Fifth Year"],
+  "Ph.DSCI": ["First Year", "Second Year", "Third Year", "Fourth Year", "Fifth Year"],
+  "MA-TAF": ["First Year", "Second Year"],
+  PGDMLT: ["First Year"],
+  BPA: ["First Year", "Second Year", "Third Year", "Fourth Year"],
+  "MSC-DS": ["First Year", "Second Year"],
+  BBA: ["First Year", "Second Year", "Third Year"],
+  BCA: ["First Year", "Second Year", "Third Year"]
+};
+  function updateYearDropdown() {
+    const courseSelect = document.getElementById("course");
+    const yearSelect = document.getElementById("year");
+    const selectedCourse = courseSelect.value;
+
+    // Clear all existing options
+    yearSelect.innerHTML = '<option value="">--Select Year--</option>';
+
+    const years = courseYearsMap[selectedCourse] || ["First Year", "Second Year", "Third Year"];
+
+    years.forEach(year => {
+      const option = document.createElement("option");
+      option.value = year;
+      option.text = year;
+      yearSelect.appendChild(option);
+    });
+  }
+
+  // Attach to onchange
+  document.getElementById("course").addEventListener("change", updateYearDropdown);
+</script>
+  <label>Gender:
+    <select id="gender">
+      <option value="male">Male</option>
+      <option value="female">Female</option>
+    </select>
+  </label>
+
+  <label>Amount Paid by Student:
+    <input type="number" id="paidAmount" value="0">
+  </label>
+
+
+
+  <button onclick="updateFee();calculateRemaining()">Calculate Remaining Fee</button>
+
+  <div class="result" id="resultText"></div>
+
+  <div class="note">
+    निवडलेल्या कोर्स व वर्षानुसार ट्युशन फी व एकूण फी आपोआप लागू केली जाईल.<br>
+    स्त्री विद्यार्थ्यांसाठी ट्युशन फीवर १००% शिष्यवृत्ती, पुरुष विद्यार्थ्यांसाठी ५०%.
+  </div>
+
+  <script>
+    const feeData = {
+
+  "MPharmQA": {
+        "First Year": { tuition: 29700, total: 51877 },
+        "Second Year": { tuition: 29700, total: 54617 },
+        "Third Year": { tuition: 0, total: 0 },
+        "Fourth Year": { tuition: 0, total: 0 },
+        "Fifth Year": { tuition: 0, total: 0 }
+      },
+
+  "MPharmPC": {
+        "First Year": { tuition: 29700, total: 51877 },
+        "Second Year": { tuition: 29700, total: 54617 },
+        "Third Year": { tuition: 0, total: 0 },
+        "Fourth Year": { tuition: 0, total: 0 },
+        "Fifth Year": { tuition: 0, total: 0 }
+      },
+
+  "MPharmPCO": {
+        "First Year": { tuition: 29700, total: 51877 },
+	  "Second Year": { tuition: 29700, total: 54617 },
+        "Third Year": { tuition: 0, total: 0 },
+        "Fourth Year": { tuition: 0, total: 0 },
+        "Fifth Year": { tuition: 0, total: 0 }
+      },
+
+  "MPharmPCh": {
+	  "First Year": { tuition: 29700, total: 51877 },
+	  "Second Year": { tuition: 29700, total: 54617 },
+        "Third Year": { tuition: 0, total: 0 },
+        "Fourth Year": { tuition: 0, total: 0 },
+        "Fifth Year": { tuition: 0, total: 0 }
+	},
+  "MBA": {
+        "First Year": { tuition: 26400, total: 42220 },
+        "Second Year": { tuition: 26400, total: 42470 },
+        "Third Year": { tuition: 0, total: 0 },
+        "Fourth Year": { tuition: 0, total: 0 },
+        "Fifth Year": { tuition: 0, total: 0 }
+      },
+
+
+  "MCA": {
+	  "First Year": { tuition: 38500, total: 44855 },
+	  "Second Year": { tuition: 38500, total: 44650 },
+        "Third Year": { tuition: 0, total: 0 },
+        "Fourth Year": { tuition: 0, total: 0 },
+        "Fifth Year": { tuition: 0, total: 0 }
+	},
+
+  "BPHARM": {
+	  "First Year": { tuition: 20570, total: 33777 },
+	  "Second Year": { tuition: 20570, total: 33667 },
+	  "Third Year": { tuition: 20570, total: 33667 },
+	  "Fourth Year": { tuition: 20570, total: 33677 },
+        "Fifth Year": { tuition: 0, total: 0 }
+	},
+
+  "MA-AE": {
+	  "First Year": { tuition: 1100 , total:  2630 },
+	  "Second Year": { tuition: 1100 , total:  2880 },
+        "Third Year": { tuition: 0, total: 0 },
+        "Fourth Year": { tuition: 0, total: 0 },
+        "Fifth Year": { tuition: 0, total: 0 }
+	},
+
+  "MA-ECO": {
+	  "First Year": { tuition: 1100 , total:  2788 },
+	  "Second Year": { tuition: 1100 , total:  3038 },
+        "Third Year": { tuition: 0, total: 0 },
+        "Fourth Year": { tuition: 0, total: 0 },
+        "Fifth Year": { tuition: 0, total: 0 }
+	},
+
+  "MA-MARATHI": {
+	  "First Year": { tuition: 1100 , total:  2630 },
+	  "Second Year": { tuition: 1100 , total:  2880 },
+        "Third Year": { tuition: 0, total: 0 },
+        "Fourth Year": { tuition: 0, total: 0 },
+        "Fifth Year": { tuition: 0, total: 0 }
+	},
+
+  "MA-MCJ": {
+	  "First Year": { tuition: 7370 , total: 10375 },
+	  "Second Year": { tuition: 7370 , total: 10625 },
+        "Third Year": { tuition: 0, total: 0 },
+        "Fourth Year": { tuition: 0, total: 0 },
+        "Fifth Year": { tuition: 0, total: 0 }
+	},
+
+  "MA-SOC": {
+	  "First Year": { tuition: 1100 , total:  2380 },
+	  "Second Year": { tuition: 1100 , total:  2880 },
+        "Third Year": { tuition: 0, total: 0 },
+        "Fourth Year": { tuition: 0, total: 0 },
+        "Fifth Year": { tuition: 0, total: 0 }
+	},
+
+  "MA-ENG": {
+	  "First Year": { tuition: 1100 , total:  2630 },
+        "Second Year": { tuition: 1100 , total:  2880 },
+        "Third Year": { tuition: 0, total: 0 },
+        "Fourth Year": { tuition: 0, total: 0 },
+        "Fifth Year": { tuition: 0, total: 0 }
+	},
+
+  "M-COM": {
+	  "First Year": { tuition: 1100 , total:  2430 },
+	  "Second Year": { tuition: 1100 , total:  2680 },
+        "Third Year": { tuition: 0, total: 0 },
+        "Fourth Year": { tuition: 0, total: 0 },
+        "Fifth Year": { tuition: 0, total: 0 }
+	},
+
+  "MED": {
+	  "First Year": { tuition: 11550, total: 15480 },
+	  "Second Year": { tuition: 11550, total: 15730 },
+        "Third Year": { tuition: 0, total: 0 },
+        "Fourth Year": { tuition: 0, total: 0 },
+        "Fifth Year": { tuition: 0, total: 0 }
+	},
+
+"MSC-AC": {
+"First Year": { tuition: 1100 , total:  3930 },
+"Second Year": { tuition: 1100 , total:  4180 },
+        "Third Year": { tuition: 0, total: 0 },
+        "Fourth Year": { tuition: 0, total: 0 },
+        "Fifth Year": { tuition: 0, total: 0 }
+},
+"MSC-BT": {
+"First Year": { tuition: 1100 , total:  5910 },
+"Second Year": { tuition: 1100 , total:  6160 },
+        "Third Year": { tuition: 0, total: 0 },
+        "Fourth Year": { tuition: 0, total: 0 },
+        "Fifth Year": { tuition: 0, total: 0 }
+},
+"MSC-BOT": {
+"First Year": { tuition: 1100 , total:  3930 },
+"Second Year": { tuition: 1100 , total:  4180 },
+        "Third Year": { tuition: 0, total: 0 },
+        "Fourth Year": { tuition: 0, total: 0 },
+        "Fifth Year": { tuition: 0, total: 0 }
+},
+"MSC-CHEM": {
+"First Year": { tuition: 1100 , total:  3930 },
+"Second Year": { tuition: 1100 , total:  4180 },
+        "Third Year": { tuition: 0, total: 0 },
+        "Fourth Year": { tuition: 0, total: 0 },
+        "Fifth Year": { tuition: 0, total: 0 }
+},
+"MSC-CA": {
+"First Year": { tuition: 5500 , total: 12805 },
+"Second Year": { tuition: 5500 , total: 13055 },
+        "Third Year": { tuition: 0, total: 0 },
+        "Fourth Year": { tuition: 0, total: 0 },
+        "Fifth Year": { tuition: 0, total: 0 }
+},
+"MSC-CN": {
+"First Year": { tuition: 5500 , total: 12805 },
+"Second Year": { tuition: 5500 , total: 13055 },
+        "Third Year": { tuition: 0, total: 0 },
+        "Fourth Year": { tuition: 0, total: 0 },
+        "Fifth Year": { tuition: 0, total: 0 }
+},
+"MSC-CS": {
+"First Year": { tuition: 5500 , total: 12805 },
+"Second Year": { tuition: 5500 , total: 13055 },
+        "Third Year": { tuition: 0, total: 0 },
+        "Fourth Year": { tuition: 0, total: 0 },
+        "Fifth Year": { tuition: 0, total: 0 }
+},
+"MSC-ES": {
+"First Year": { tuition: 1100 , total:  3930 },
+"Second Year": { tuition: 1100 , total:  4180 },
+        "Third Year": { tuition: 0, total: 0 },
+        "Fourth Year": { tuition: 0, total: 0 },
+        "Fifth Year": { tuition: 0, total: 0 }
+},
+"MSC-GEO": {
+"First Year": { tuition: 1100 , total:  3930 },
+"Second Year": { tuition: 1100 , total:  4180 },
+        "Third Year": { tuition: 0, total: 0 },
+        "Fourth Year": { tuition: 0, total: 0 },
+        "Fifth Year": { tuition: 0, total: 0 }
+},
+"MSC-MATH": {
+"First Year": { tuition: 1100 , total:  3930 },
+"Second Year": { tuition: 1100 , total:  4180 },
+        "Third Year": { tuition: 0, total: 0 },
+        "Fourth Year": { tuition: 0, total: 0 },
+        "Fifth Year": { tuition: 0, total: 0 }
+},
+"MSC-MICRO": {
+"First Year": { tuition: 1100 , total:  3930 },
+"Second Year": { tuition: 1100 , total:  4180 },
+        "Third Year": { tuition: 0, total: 0 },
+        "Fourth Year": { tuition: 0, total: 0 },
+        "Fifth Year": { tuition: 0, total: 0 }
+},
+"MSC-OC": {
+"First Year": { tuition: 1100 , total:  3930 },
+"Second Year": { tuition: 1100 , total:  4180 },
+        "Third Year": { tuition: 0, total: 0 },
+        "Fourth Year": { tuition: 0, total: 0 },
+        "Fifth Year": { tuition: 0, total: 0 }
+},
+"MSC-PC": {
+"First Year": { tuition: 1100 , total:  3930 },
+"Second Year": { tuition: 1100 , total:  4180 },
+        "Third Year": { tuition: 0, total: 0 },
+        "Fourth Year": { tuition: 0, total: 0 },
+        "Fifth Year": { tuition: 0, total: 0 }
+},
+"MSC-PHY": {
+"First Year": { tuition: 1100 , total:  3930 },
+"Second Year": { tuition: 1100 , total:  4180 },
+        "Third Year": { tuition: 0, total: 0 },
+        "Fourth Year": { tuition: 0, total: 0 },
+        "Fifth Year": { tuition: 0, total: 0 }
+},
+"MSC-STAT": {
+"First Year": { tuition: 1100 , total:  3930 },
+"Second Year": { tuition: 1100 , total:  4180 },
+        "Third Year": { tuition: 0, total: 0 },
+        "Fourth Year": { tuition: 0, total: 0 },
+        "Fifth Year": { tuition: 0, total: 0 }
+},
+"MSC-ZOO": {
+"First Year": { tuition: 1100 , total:  3930 },
+"Second Year": { tuition: 1100 , total:  4180 },
+        "Third Year": { tuition: 0, total: 0 },
+        "Fourth Year": { tuition: 0, total: 0 },
+        "Fifth Year": { tuition: 0, total: 0 }
+},
+"MSC-IC": {
+"First Year": { tuition: 1100 , total:  3930 },
+"Second Year": { tuition: 1100 , total:  4180 },
+        "Third Year": { tuition: 0, total: 0 },
+        "Fourth Year": { tuition: 0, total: 0 },
+        "Fifth Year": { tuition: 0, total: 0 }
+},
+"MPED": {
+"First Year": { tuition: 20900, total: 26795 },
+"Second Year": { tuition: 20900, total: 27045 },
+        "Third Year": { tuition: 0, total: 0 },
+        "Fourth Year": { tuition: 0, total: 0 },
+        "Fifth Year": { tuition: 0, total: 0 }
+},
+"MSW": {
+"First Year": { tuition: 1100 , total:  4595 },
+"Second Year": { tuition: 1100 , total:  4845 },
+        "Third Year": { tuition: 0, total: 0 },
+        "Fourth Year": { tuition: 0, total: 0 },
+        "Fifth Year": { tuition: 0, total: 0 }
+},
+"MSC-PCO": {
+"First Year": { tuition: 1100 , total:  3930 },
+"Second Year": { tuition: 1100 , total:  4180 },
+        "Third Year": { tuition: 0, total: 0 },
+        "Fourth Year": { tuition: 0, total: 0 },
+        "Fifth Year": { tuition: 0, total: 0 }
+},
+"MA-HR": {
+"First Year": { tuition: 1100 , total:  2630 },
+"Second Year": { tuition: 1100 , total:  2880 },
+        "Third Year": { tuition: 0, total: 0 },
+        "Fourth Year": { tuition: 0, total: 0 },
+        "Fifth Year": { tuition: 0, total: 0 }
+},
+"MSC-MC": {
+"First Year": { tuition: 1100 , total:  3930 },
+"Second Year": { tuition: 1100 , total:  4180 },
+        "Third Year": { tuition: 0, total: 0 },
+        "Fourth Year": { tuition: 0, total: 0 },
+        "Fifth Year": { tuition: 0, total: 0 }
+},
+"MSC-GP": {
+"First Year": { tuition: 1100 , total:  3930 },
+"Second Year": { tuition: 1100 , total:  4180 },
+        "Third Year": { tuition: 0, total: 0 },
+        "Fourth Year": { tuition: 0, total: 0 },
+        "Fifth Year": { tuition: 0, total: 0 }
+},
+"PGDGEO": {
+"First Year": { tuition: 1100 , total:  7180 },
+"Second Year": { tuition: 0 , total:  0 },
+"Third Year": { tuition: 0 , total: 0 },
+"Fourth Year": { tuition: 0 , total:  0 },
+"Fifth Year": { tuition: 0 , total:  0 }
+
+},
+"MSC-EM": {
+"First Year": { tuition: 11000, total: 19055 },
+"Second Year": { tuition: 11000, total: 19305 },
+        "Third Year": { tuition: 0, total: 0 },
+        "Fourth Year": { tuition: 0, total: 0 },
+        "Fifth Year": { tuition: 0, total: 0 }
+},
+"Ph.DComm": {
+"First Year": { tuition: 3850 , total: 15279 },
+"Second Year": { tuition: 3850 , total:  6996 },
+"Third Year": { tuition: 3850 , total: 14036 },
+"Fourth Year": { tuition: 3850 , total:  8496 },
+"Fifth Year": { tuition: 3850 , total:  8496 }
+},
+"MAMSCGP": {
+"First Year": { tuition: 1100 , total:  3930 },
+"Second Year": { tuition: 1100 , total:  4180 },
+        "Third Year": { tuition: 0, total: 0 },
+        "Fourth Year": { tuition: 0, total: 0 },
+        "Fifth Year": { tuition: 0, total: 0 }
+},
+"PGDWS": {
+"First Year": { tuition: 550  , total:  2230 },
+"Second Year": { tuition: 0 , total:  0 },
+"Third Year": { tuition: 0 , total: 0 },
+"Fourth Year": { tuition: 0 , total:  0 },
+"Fifth Year": { tuition: 0 , total:  0 }
+
+},
+"Ph.Dart": {
+"First Year": { tuition: 3850 , total: 11429 },
+"Second Year": { tuition: 3850 , total:  6996 },
+"Third Year": { tuition: 3850 , total: 14036 },
+"Fourth Year": { tuition: 3850 , total:  8496 },
+"Fifth Year": { tuition: 3850 , total:  8496 }
+},
+"Ph.DSCI": {
+"First Year": { tuition: 3850 , total: 20779 },
+"Second Year": { tuition: 3850 , total: 12496 },
+"Third Year": { tuition: 3850 , total: 19536 },
+"Fourth Year": { tuition: 3850 , total: 13996 },
+"Fifth Year": { tuition: 3850 , total: 13996 }
+},
+"MA-TAF": {
+"First Year": { tuition: 16500, total: 21342 },
+"Second Year": { tuition: 16500, total: 21592 },
+        "Third Year": { tuition: 0, total: 0 },
+        "Fourth Year": { tuition: 0, total: 0 },
+        "Fifth Year": { tuition: 0, total: 0 }
+},
+"PGDMLT": {
+"First Year": { tuition: 25000, total: 27098 },
+"Second Year": { tuition: 0 , total:  0 },
+"Third Year": { tuition: 0 , total: 0 },
+"Fourth Year": { tuition: 0 , total:  0 },
+"Fifth Year": { tuition: 0 , total:  0 }
+},
+"BPA": {
+"First Year": { tuition: 17600, total: 22417 },
+"Second Year": { tuition: 17600, total: 22417 },
+"Third Year": { tuition: 17600, total: 22417 },
+"Fourth Year": { tuition: 17600, total: 22667 },
+"Fifth Year": { tuition: 0 , total:  0 }
+
+},
+"MSC-DS": {
+"First Year": { tuition: 24200, total: 31702 },
+"Second Year": { tuition: 24200, total: 31952 },
+"Third Year": { tuition: 0 , total: 0 },
+"Fourth Year": { tuition: 0 , total:  0 },
+"Fifth Year": { tuition: 0 , total:  0 }
+},
+"BBA": {
+"First Year": { tuition: 14500, total: 16000 },
+"Second Year": { tuition: 14500, total: 16000 },
+"Third Year": { tuition: 14500, total: 16250 },
+"Fourth Year": { tuition: 0 , total:  0 },
+"Fifth Year": { tuition: 0 , total:  0 }
+
+},
+"BCA": {
+"First Year": { tuition: 17600, total: 20610 },
+"Second Year": { tuition: 17600, total: 20610 },
+"Third Year": { tuition: 17600, total: 20610 },
+"Fourth Year": { tuition: 0 , total:  0 },
+"Fifth Year": { tuition: 0 , total:  0 }
+
+}
+    };
+
+    function updateFee() {
+      const course = document.getElementById("course").value;
+      const year = document.getElementById("year").value;
+      if (feeData[course] && feeData[course][year]) {
+        const data = feeData[course][year];
+        document.getElementById("totalFee").value = data.total;
+        document.getElementById("tuitionFee").value = data.tuition;
+      }
+    }
+
+    function calculateRemaining() {
+      updateFee();
+      const tuitionFee = parseFloat(document.getElementById("tuitionFee").value);
+      const totalFee = parseFloat(document.getElementById("totalFee").value);
+      const paidAmount = parseFloat(document.getElementById("paidAmount").value);
+      const gender = document.getElementById("gender").value;
+
+      let scholarshipPercent = gender === "female" ? 100 : 50;
+      const scholarshipAmount = (scholarshipPercent / 100) * tuitionFee;
+      const remainingFee = totalFee - (scholarshipAmount + paidAmount);
+      
+      document.getElementById("resultText").innerText =
+        "Remaining Fee = " + totalFee + " - (" + scholarshipAmount.toFixed(2) + " + " + paidAmount.toFixed(2) + ") = " + remainingFee.toFixed(2)+"\n"+
+        "Total Fee = " + totalFee +"\n"+
+        "Tution Fee = " + tuitionFee ;
+    }
+  </script>
+
+  <input type="hidden" id="tuitionFee">
+  <input type="hidden" id="totalFee">
+
+</body>
+</html>
